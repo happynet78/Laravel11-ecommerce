@@ -146,10 +146,10 @@ class CartController extends Controller
 
         $order = new Order();
         $order->user_id = $user_id;
-        $order->subtotal = Session::get('checkout')['subtotal'];
-        $order->discount = Session::get('checkout')['discount'];
-        $order->tax = Session::get('checkout')['tax'];
-        $order->total = Session::get('checkout')['total'];
+        $order->subtotal = str_replace(',', '', Session::get('checkout')['subtotal']);
+        $order->discount = str_replace(',', '', Session::get('checkout')['discount']);
+        $order->tax = str_replace(',', '', Session::get('checkout')['tax']);
+        $order->total = str_replace(',', '', Session::get('checkout')['total']);
         $order->name = $address->name;
         $order->phone = $address->phone;
         $order->locality = $address->locality;
@@ -170,17 +170,35 @@ class CartController extends Controller
             $orderItem->save();
         }
 
-        $transaction = new Transaction();
-        $transaction->user_id = $user_id;
-        $transaction->order_id = $order->id;
-        $transaction->mode = $request->mode;
-        $transaction->status = 'pending';
-        $transaction->save();
+        if($request->mode == 'card') {
+            // $transaction = new Transaction();
+            // $transaction->user_id = $user_id;
+            // $transaction->order_id = $order->id;
+            // $transaction->mode = $request->mode;
+            // $transaction->status = 'pending';
+            // $transaction->save();
+        } else if($request->mode == 'paypal') {
+            // $transaction = new Transaction();
+            // $transaction->user_id = $user_id;
+            // $transaction->order_id = $order->id;
+            // $transaction->mode = $request->mode;
+            // $transaction->status = 'pending';
+            // $transaction->save();
+        } else if($request->mode == 'cod') {
+            $transaction = new Transaction();
+            $transaction->user_id = $user_id;
+            $transaction->order_id = $order->id;
+            $transaction->mode = $request->mode;
+            $transaction->status = 'pending';
+            $transaction->save();
+        }
 
-        Cart::instance('cart')->distroy();
+        Cart::instance('cart')->destroy();
         Session::forget('checkout');
         Session::forget('coupon');
         Session::forget('discounts');
+        Session::put('order_id', $order->id);
+        return redirect()->route('cart.order.confirmation');
     }
 
     public function setAmountforCheckout() {
@@ -204,5 +222,13 @@ class CartController extends Controller
                 'total' => Cart::instance('cart')->total(),
             ]);
         }
+    }
+
+    public function order_confirmation() {
+        if(Session::has('order_id')) {
+            $order = Order::find(Session::get('order_id'));
+            return view('order-confirmation', compact('order'));
+        }
+        return redirect()->route('cart.index');
     }
 }

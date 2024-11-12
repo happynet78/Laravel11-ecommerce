@@ -2,7 +2,7 @@
 
 @section('content')
 
-        <main class="pt-90" style="padding-top: 0px;">
+    <main class="pt-90" style="padding-top: 0px;">
         <div class="mb-4 pb-4"></div>
         <section class="shop-checkout container">
             <h2 class="page-title">Shipping and Checkout</h2>
@@ -29,7 +29,8 @@
                     </span>
                 </a>
             </div>
-            <form name="checkout-form" action="https://uomo-html.flexkitux.com/Demo3/shop_order_complete.html">
+            <form name="checkout-form" action="{{ route('cart.place.an.order') }}" method="post">
+                @csrf
                 <div class="checkout-form">
                     <div class="billing-info__wrapper">
                         <div class="row">
@@ -197,21 +198,21 @@
                             <div class="checkout__payment-methods">
                                 <!-- 직불 또는 신용카드  -->
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode1">
+                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode1" value="card">
                                     <label class="form-check-label" for="mode1">
                                         Debit or Credit Card
                                     </label>
                                 </div>
                                 <!-- 페이팔  -->
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode2">
+                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode2" value="paypal">
                                     <label class="form-check-label" for="mode2">
                                         Paypal
                                     </label>
                                 </div>
                                 <!!-- 현금  -->
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode3">
+                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode" id="mode3" value="cod">
                                     <label class="form-check-label" for="mode3">
                                         Cash on delivery
                                     </label>
