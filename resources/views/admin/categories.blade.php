@@ -107,7 +107,7 @@
                 const form = $(this).closest('form');
                 swal({
                     title: 'Are you sure?',
-                    text: "Once delete, you will not be able to recover this data",
+                    text: "You want to delete this record?",
                     icon: "warning",
                     buttons: ["No", "Yes"],
                     confirmButtonColor: '#dc3545',

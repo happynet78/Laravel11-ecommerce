@@ -34,6 +34,9 @@
                     <a class="tf-button style-1 w208" href="{{ route('admin.orders') }}">Back</a>
                 </div>
                 <div class="table-responsive">
+                    @if(Session::has('success'))
+                        <p class="alert alert-success">{{ Session::get('success') }}</p>
+                    @endif
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
@@ -150,15 +153,15 @@
                     <tbody>
                         <tr>
                             <th>Subtotal</th>
-                            <td>${{ $order->subtoal }}</td>
+                            <td>{{ $order->subtotal }} 원</td>
                             <th>Tax</th>
-                            <td>${{ $order->tax }}</td>
+                            <td>{{ $order->tax }} 원</td>
                             <th>Discount</th>
-                            <td>${{ $order->discount }}</td>
+                            <td>{{ $order->discount }} 원</td>
                         </tr>
                         <tr>
                             <th>Total</th>
-                            <td>${{ $order->total }}</td>
+                            <td>{{ $order->total }} 원</td>
                             <th>Payment Mode</th>
                             <td>{{ $transaction->mode }}</td>
                             <th>Status</th>
@@ -176,6 +179,29 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="wg-box mt-5">
+                <h5>Update Order Status</h5>
+                <form method="post" action="{{ route('admin.order.status.update') }}">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="select">
+                                <select id="order_status" name="order_status">
+                                    <option value="ordered" {{ $order->status == 'ordered' ? 'selected':'' }}>Ordered</option>
+                                    <option value="delivered" {{ $order->status == 'delivered' ? 'selected':'' }}>Delivered</option>
+                                    <option value="canceled" {{ $order->status == 'canceled' ? 'selected':'' }}>Canceled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary tf-button w208">Update Status</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
